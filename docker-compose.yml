@@ -1,0 +1,9 @@
+services:
+  php:
+    build:
+      context: ./docker/php
+      dockerfile: ./Dockerfile
+      args:
+        - PHP_VERSION=${PHP_VERSION}
+    volumes:
+      - .:/var/www
