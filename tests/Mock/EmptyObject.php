@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Tests\Mock;
 
-class EmptyObject implements EmptyInterface
+readonly class EmptyObject implements EmptyInterface
 {
     /**
      * @inheritDoc
