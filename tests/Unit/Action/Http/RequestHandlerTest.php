@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Karolak\Core\Tests\Unit\Application\RequestHandler;
+namespace Karolak\Core\Tests\Unit\Action\Http;
 
-use Karolak\Core\Application\RequestHandler\RequestHandler;
+use Karolak\Core\Action\Http\RequestHandler;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;

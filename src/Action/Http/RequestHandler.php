@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Karolak\Core\Application\RequestHandler;
+namespace Karolak\Core\Action\Http;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
