@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Application\Container;
 
-use Closure;
 use Karolak\Core\Application\Container\Exception\ContainerEntryNotFoundException;
+use Karolak\Core\Application\Container\Exception\ContainerException;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
+use Throwable;
 
 final class LazyObjectContainer implements ContainerInterface
 {
@@ -15,12 +16,29 @@ final class LazyObjectContainer implements ContainerInterface
     private array $container = [];
 
     /**
-     * @param array<class-string,Closure> $services
+     * @param array<class-string,array<int,class-string>> $services
+     * @throws ContainerException
      */
     public function __construct(array $services = [])
     {
-        foreach ($services as $class => $initializer) {
-            $this->container[$class] = new ReflectionClass($class)->newLazyGhost($initializer);
+        try {
+            foreach ($services as $id => $classes) {
+                $this->container[$id] = new ReflectionClass($classes[0])
+                    ->newLazyProxy(
+                        function (object $o) use ($classes) {
+                            $args = array_map(
+                                function (string $class) {
+                                    return $this->container[$class];
+                                },
+                                array_slice($classes, 1)
+                            );
+
+                            return new $classes[0](...$args);
+                        }
+                    );
+            }
+        } catch (Throwable $origin) {
+            throw ContainerException::forInitializationWith($origin);
         }
     }
 
@@ -29,7 +47,7 @@ final class LazyObjectContainer implements ContainerInterface
      */
     public function get(string $id): object
     {
-        return $this->container[$id] ?? throw ContainerEntryNotFoundException::occured();
+        return $this->container[$id] ?? throw ContainerEntryNotFoundException::forService($id);
     }
 
     /**
