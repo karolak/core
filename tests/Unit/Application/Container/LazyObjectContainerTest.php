@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Karolak\Core\Tests\Unit\Application\Container;
 
 use Karolak\Core\Application\Container\Exception\ContainerEntryNotFoundException;
+use Karolak\Core\Application\Container\Exception\ContainerException;
 use Karolak\Core\Application\Container\LazyObjectContainer;
+use Karolak\Core\Tests\Mock\EmptyInterface;
 use Karolak\Core\Tests\Mock\EmptyObject;
+use Karolak\Core\Tests\Mock\ObjectWithDependency;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
@@ -16,9 +19,13 @@ use Psr\Container\NotFoundExceptionInterface;
 
 #[
     UsesClass(EmptyObject::class),
+    UsesClass(ObjectWithDependency::class),
     UsesClass(ContainerEntryNotFoundException::class),
+    UsesClass(ContainerException::class),
     CoversClass(LazyObjectContainer::class),
-    CoversClass(ContainerEntryNotFoundException::class)
+    CoversClass(ContainerEntryNotFoundException::class),
+    CoversClass(ContainerException::class),
+    CoversClass(ObjectWithDependency::class)
 ]
 final class LazyObjectContainerTest extends TestCase
 {
@@ -40,21 +47,39 @@ final class LazyObjectContainerTest extends TestCase
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      */
-    public function testShouldContainAddedEntry(): void
+    public function testShouldAddEntries(): void
     {
         // given
         $services = [
-            EmptyObject::class => static function (EmptyObject $containerEntry): void {
-                $containerEntry->__construct();
-            }
+            EmptyInterface::class => [EmptyObject::class],
+            ObjectWithDependency::class => [ObjectWithDependency::class, EmptyInterface::class]
         ];
 
         // when
         $container = new LazyObjectContainer($services);
 
         // then
-        $this->assertTrue($container->has(EmptyObject::class));
-        $this->assertInstanceOf(EmptyObject::class, $container->get(EmptyObject::class));
+        $this->assertTrue($container->has(EmptyInterface::class));
+        $this->assertInstanceOf(EmptyObject::class, $container->get(EmptyInterface::class));
+        $this->assertEquals(0, $container->get(EmptyInterface::class)->getValue());
+        $this->assertTrue($container->has(ObjectWithDependency::class));
+        $this->assertInstanceOf(ObjectWithDependency::class, $container->get(ObjectWithDependency::class));
+        $this->assertEquals(0, $container->get(ObjectWithDependency::class)->object->getValue());
+    }
+
+    /**
+     * @return void
+     * @throws ContainerExceptionInterface
+     */
+    public function testShouldThrowExceptionOnIncorrectInitData(): void
+    {
+        // then
+        $this->expectException(ContainerException::class);
+
+        // when
+        new LazyObjectContainer([
+            EmptyInterface::class => [EmptyInterface::class]
+        ]);
     }
 
     /**

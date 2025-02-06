@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Tests\Mock;
 
-class EmptyObject
+class EmptyObject implements EmptyInterface
 {
-    public function __construct()
+    /**
+     * @inheritDoc
+     */
+    public function getValue(): int
     {
+        return 0;
     }
 }
