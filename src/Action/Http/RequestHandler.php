@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Action\Http;
 
+use Override;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -24,6 +25,7 @@ final class RequestHandler implements RequestHandlerInterface
     /**
      * @inheritDoc
      */
+    #[Override]
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $middleware = array_shift($this->middlewares);

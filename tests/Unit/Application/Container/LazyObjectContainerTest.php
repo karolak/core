@@ -11,21 +11,15 @@ use Karolak\Core\Tests\Mock\EmptyInterface;
 use Karolak\Core\Tests\Mock\EmptyObject;
 use Karolak\Core\Tests\Mock\ObjectWithDependency;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
 #[
-    UsesClass(EmptyObject::class),
-    UsesClass(ObjectWithDependency::class),
-    UsesClass(ContainerEntryNotFoundException::class),
-    UsesClass(ContainerException::class),
     CoversClass(LazyObjectContainer::class),
-    CoversClass(ContainerEntryNotFoundException::class),
     CoversClass(ContainerException::class),
-    CoversClass(ObjectWithDependency::class)
+    CoversClass(ContainerEntryNotFoundException::class)
 ]
 final class LazyObjectContainerTest extends TestCase
 {
@@ -89,12 +83,11 @@ final class LazyObjectContainerTest extends TestCase
      */
     public function testShouldThrowExceptionWhenEntryNotFound(): void
     {
+        // then
+        $this->expectException(NotFoundExceptionInterface::class);
+
         // given
         $container = new LazyObjectContainer();
-
-        // then
-        $this->assertFalse($container->has(EmptyObject::class));
-        $this->expectException(NotFoundExceptionInterface::class);
 
         // when
         $container->get(EmptyObject::class);

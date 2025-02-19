@@ -6,7 +6,6 @@ namespace Karolak\Core\Tests\Unit\Action\Http;
 
 use Karolak\Core\Action\Http\RequestHandler;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
@@ -14,10 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-#[
-    UsesClass(RequestHandler::class),
-    CoversClass(RequestHandler::class)
-]
+#[CoversClass(RequestHandler::class)]
 final class RequestHandlerTest extends TestCase
 {
     /**

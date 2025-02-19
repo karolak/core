@@ -6,6 +6,7 @@ namespace Karolak\Core\Application\Container;
 
 use Karolak\Core\Application\Container\Exception\ContainerEntryNotFoundException;
 use Karolak\Core\Application\Container\Exception\ContainerException;
+use Override;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use Throwable;
@@ -45,6 +46,7 @@ final class LazyObjectContainer implements ContainerInterface
     /**
      * @inheritDoc
      */
+    #[Override]
     public function get(string $id): object
     {
         return $this->container[$id] ?? throw ContainerEntryNotFoundException::forService($id);
@@ -53,6 +55,7 @@ final class LazyObjectContainer implements ContainerInterface
     /**
      * @inheritDoc
      */
+    #[Override]
     public function has(string $id): bool
     {
         return isset($this->container[$id]);
