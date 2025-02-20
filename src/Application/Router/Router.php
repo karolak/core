@@ -10,6 +10,7 @@ final class Router implements RouterInterface
 {
     private const int METHOD_KEY = 0;
     private const int PATH_KEY = 1;
+    private const int HANDLER_KEY = 2;
 
     /**
      * @param array<string,array<int,string>> $routes
@@ -24,8 +25,9 @@ final class Router implements RouterInterface
     #[Override]
     public function dispatch(string $method, string $path): array
     {
+        $path = '/' . trim($path, '/');
         $result = [];
-        foreach ($this->routes as $name => $route) {
+        foreach ($this->routes as $route) {
             if (($route[self::METHOD_KEY] ?? null) !== $method || ($route[self::PATH_KEY] ?? null) === null) {
                 continue;
             }
@@ -45,7 +47,7 @@ final class Router implements RouterInterface
             }
 
             $result = [
-                $name,
+                $route[self::HANDLER_KEY],
                 count($routeParamsNames) === count($routeParamsValues)
                     ? array_combine($routeParamsNames, $routeParamsValues)
                     : []

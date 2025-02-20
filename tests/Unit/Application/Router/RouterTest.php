@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Karolak\Core\Tests\Unit\Application\Router;
 
 use Karolak\Core\Application\Router\Router;
-use Karolak\Core\Application\Router\RouterInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
@@ -16,96 +15,209 @@ use PHPUnit\Framework\TestCase;
 ]
 final class RouterTest extends TestCase
 {
-    private const int ROUTE_NAME_KEY = 0;
+    private const int ROUTE_HANDLER_KEY = 0;
     private const int ROUTE_ARGUMENTS_KEY = 1;
 
     /**
      * @return void
      */
-    public function testItCanBeConstructed(): void
-    {
-        // when
-        $router = new Router();
-
-        // then
-        $this->assertInstanceOf(Router::class, $router);
-        $this->assertInstanceOf(RouterInterface::class, $router);
-    }
-
-    /**
-     * @return void
-     */
-    public function testDispatchingSimpleRoutes(): void
+    public function testShouldDispatchRouteWithCorrectMethodWhenPathsAreSame(): void
     {
         // given
         $routes = [
-            'route1' => ['GET', '/', 'GetPageRequestHandler'],
-            'route2' => ['POST', '/a', 'AddPageRequestHandler'],
-            'route3' => ['PUT', '/b', 'EditPageRequestHandler'],
-            'route4' => ['DELETE', '/c', 'DeletePageRequestHandler']
+            'route1' => ['GET', '/', 'RequestHandler1'],
+            'route2' => ['POST', '/', 'RequestHandler2']
         ];
         $router = new Router($routes);
 
         // when
         $d1 = $router->dispatch('GET', '/');
-        $d2 = $router->dispatch('POST', '/a');
-        $d3 = $router->dispatch('PUT', '/b');
-        $d4 = $router->dispatch('DELETE', '/c');
+        $d2 = $router->dispatch('POST', '/');
 
         // then
-        $this->assertEquals('route1', $d1[self::ROUTE_NAME_KEY]);
-        $this->assertEquals('route2', $d2[self::ROUTE_NAME_KEY]);
-        $this->assertEquals('route3', $d3[self::ROUTE_NAME_KEY]);
-        $this->assertEquals('route4', $d4[self::ROUTE_NAME_KEY]);
+        $this->assertEquals('RequestHandler1', $d1[self::ROUTE_HANDLER_KEY]);
+        $this->assertEquals('RequestHandler2', $d2[self::ROUTE_HANDLER_KEY]);
     }
 
     /**
      * @return void
      */
-    public function testDispatchingParameterizedRoutes(): void
+    public function testShouldDispatchRouteWithCorrectPathWhenMethodsAreSame(): void
     {
         // given
         $routes = [
-            'route1' => ['GET', '/page/{id:\d+}', 'GetPageRequestHandler'],
-            'route2' => ['GET', '/user/{user_id:\d+}', 'GetUserRequestHandler'],
-            'route3' => ['GET', '/user/{user_id:\d+}/address', 'GetUserAddressesRequestHandler'],
-            'route4' => ['GET', '/user/{user_id:\d+}/address/{address_id:\d+}', 'GetUserAddressRequestHandler'],
-            'route5' => ['GET', '/user/{user_id:\d+}/address/{address_id:\d+}/location', 'GetUserAddressLocationsRequestHandler'],
-            'route6' => ['GET', '/user/{user_id:\d+}/address/{address_id:\d+}/location/{location_id:\d+}', 'GetUserAddressLocationRequestHandler'],
+            'route1' => ['GET', '/a', 'RequestHandler1'],
+            'route2' => ['GET', '/b', 'RequestHandler2']
         ];
         $router = new Router($routes);
 
         // when
-        $d1 = $router->dispatch('GET', '/page/123');
-        $d2 = $router->dispatch('GET', '/user/123');
-        $d3 = $router->dispatch('GET', '/user/123/address');
-        $d4 = $router->dispatch('GET', '/user/123/address/21');
-        $d5 = $router->dispatch('GET', '/user/123/address/21/location');
-        $d6 = $router->dispatch('GET', '/user/123/address/21/location/34');
+        $d1 = $router->dispatch('GET', '/a');
+        $d2 = $router->dispatch('GET', '/b');
 
         // then
-        $this->assertEquals('route1', $d1[self::ROUTE_NAME_KEY]);
+        $this->assertEquals('RequestHandler1', $d1[self::ROUTE_HANDLER_KEY]);
+        $this->assertEquals('RequestHandler2', $d2[self::ROUTE_HANDLER_KEY]);
+    }
+
+    /**
+     * @return void
+     */
+    public function testShouldDispatchRouteWithSingleParameter(): void
+    {
+        // given
+        $routes = [
+            'route1' => ['GET', '/{id}', 'RequestHandler1'],
+            'route2' => ['GET', '/a/{id}', 'RequestHandler2'],
+            'route3' => ['GET', '/a/{id}/b', 'RequestHandler3']
+        ];
+        $router = new Router($routes);
+
+        // when
+        $d1 = $router->dispatch('GET', '/1');
+        $d2 = $router->dispatch('GET', '/a/1');
+        $d3 = $router->dispatch('GET', '/a/1/b');
+
+        // then
+        $this->assertEquals('RequestHandler1', $d1[self::ROUTE_HANDLER_KEY]);
         $this->assertIsArray($d1[self::ROUTE_ARGUMENTS_KEY]);
         $this->assertCount(1, $d1[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertArrayHasKey('id', $d1[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertEquals('1', $d1[self::ROUTE_ARGUMENTS_KEY]['id']);
 
-        $this->assertEquals('route2', $d2[self::ROUTE_NAME_KEY]);
+        $this->assertEquals('RequestHandler2', $d2[self::ROUTE_HANDLER_KEY]);
         $this->assertIsArray($d2[self::ROUTE_ARGUMENTS_KEY]);
         $this->assertCount(1, $d2[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertArrayHasKey('id', $d2[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertEquals('1', $d2[self::ROUTE_ARGUMENTS_KEY]['id']);
 
-        $this->assertEquals('route3', $d3[self::ROUTE_NAME_KEY]);
+        $this->assertEquals('RequestHandler3', $d3[self::ROUTE_HANDLER_KEY]);
         $this->assertIsArray($d3[self::ROUTE_ARGUMENTS_KEY]);
         $this->assertCount(1, $d3[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertArrayHasKey('id', $d3[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertEquals('1', $d3[self::ROUTE_ARGUMENTS_KEY]['id']);
+    }
 
-        $this->assertEquals('route4', $d4[self::ROUTE_NAME_KEY]);
-        $this->assertIsArray($d4[self::ROUTE_ARGUMENTS_KEY]);
-        $this->assertCount(2, $d4[self::ROUTE_ARGUMENTS_KEY]);
+    /**
+     * @return void
+     */
+    public function testShouldDispatchRouteWithMultipleParameters(): void
+    {
+        // given
+        $routes = [
+            'route1' => ['GET', '/{id}/{num}', 'RequestHandler1'],
+            'route2' => ['GET', '/a/{id}/{num}', 'RequestHandler2'],
+            'route3' => ['GET', '/a/{id}/b/{num}', 'RequestHandler3']
+        ];
+        $router = new Router($routes);
 
-        $this->assertEquals('route5', $d5[self::ROUTE_NAME_KEY]);
-        $this->assertIsArray($d5[self::ROUTE_ARGUMENTS_KEY]);
-        $this->assertCount(2, $d5[self::ROUTE_ARGUMENTS_KEY]);
+        // when
+        $d1 = $router->dispatch('GET', '/1/2');
+        $d2 = $router->dispatch('GET', '/a/1/2');
+        $d3 = $router->dispatch('GET', '/a/1/b/2');
 
-        $this->assertEquals('route6', $d6[self::ROUTE_NAME_KEY]);
-        $this->assertIsArray($d6[self::ROUTE_ARGUMENTS_KEY]);
-        $this->assertCount(3, $d6[self::ROUTE_ARGUMENTS_KEY]);
+        // then
+        $this->assertEquals('RequestHandler1', $d1[self::ROUTE_HANDLER_KEY]);
+        $this->assertIsArray($d1[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertCount(2, $d1[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertArrayHasKey('id', $d1[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertArrayHasKey('num', $d1[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertEquals('1', $d1[self::ROUTE_ARGUMENTS_KEY]['id']);
+        $this->assertEquals('2', $d1[self::ROUTE_ARGUMENTS_KEY]['num']);
+
+        $this->assertEquals('RequestHandler2', $d2[self::ROUTE_HANDLER_KEY]);
+        $this->assertIsArray($d2[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertCount(2, $d2[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertArrayHasKey('id', $d2[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertArrayHasKey('num', $d2[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertEquals('1', $d2[self::ROUTE_ARGUMENTS_KEY]['id']);
+        $this->assertEquals('2', $d2[self::ROUTE_ARGUMENTS_KEY]['num']);
+
+        $this->assertEquals('RequestHandler3', $d3[self::ROUTE_HANDLER_KEY]);
+        $this->assertIsArray($d3[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertCount(2, $d3[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertArrayHasKey('id', $d3[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertArrayHasKey('num', $d3[self::ROUTE_ARGUMENTS_KEY]);
+        $this->assertEquals('1', $d3[self::ROUTE_ARGUMENTS_KEY]['id']);
+        $this->assertEquals('2', $d3[self::ROUTE_ARGUMENTS_KEY]['num']);
+    }
+
+    /**
+     * @return void
+     */
+    public function testShouldReturnEmptyArrayWhereRouteNotFound(): void
+    {
+        // given
+        $routes = [
+            'route1' => ['GET', '/', 'RequestHandler1']
+        ];
+        $router = new Router($routes);
+
+        // when
+        $d1 = $router->dispatch('GET', '/a');
+
+        // then
+        $this->assertEmpty($d1);
+    }
+
+    /**
+     * @return void
+     */
+    public function testShouldIgnoreSlashAtTheEndOfPath(): void
+    {
+        // given
+        $routes = [
+            'route1' => ['GET', '/a', 'RequestHandler1']
+        ];
+        $router = new Router($routes);
+
+        // when
+        $d1 = $router->dispatch('GET', '/a');
+        $d2 = $router->dispatch('GET', '/a/');
+
+        // then
+        $this->assertNotEmpty($d1);
+        $this->assertNotEmpty($d2);
+    }
+
+    /**
+     * @return void
+     */
+    public function testShouldDispatchRouteWithParameterValidation(): void
+    {
+        // given
+        $routes = [
+            'route1' => ['GET', '/{id:\d+}', 'RequestHandler1'],
+            'route2' => ['GET', '/{id:[a-z]+}', 'RequestHandler2']
+        ];
+        $router = new Router($routes);
+
+        // when
+        $d1 = $router->dispatch('GET', '/123');
+        $d2 = $router->dispatch('GET', '/abc');
+
+        // then
+        $this->assertEquals('RequestHandler1', $d1[self::ROUTE_HANDLER_KEY]);
+        $this->assertEquals('RequestHandler2', $d2[self::ROUTE_HANDLER_KEY]);
+    }
+
+    /**
+     * @return void
+     */
+    public function testParameterShouldBeRequired(): void
+    {
+        // given
+        $routes = [
+            'route1' => ['GET', '/{id}', 'RequestHandler1']
+        ];
+        $router = new Router($routes);
+
+        // when
+        $d1 = $router->dispatch('GET', '/a');
+        $d2 = $router->dispatch('GET', '/');
+
+        // then
+        $this->assertNotEmpty($d1);
+        $this->assertEmpty($d2);
     }
 }
