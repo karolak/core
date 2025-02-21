@@ -6,6 +6,9 @@ namespace Karolak\Core\Application\Router;
 
 interface RouterInterface
 {
+    public const int HANDLER = 0;
+    public const int PARAMETERS = 1;
+
     /**
      * @param string $method
      * @param string $path
