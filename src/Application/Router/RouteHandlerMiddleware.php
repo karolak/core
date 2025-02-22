@@ -14,7 +14,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 
-final class RouteHandlerMiddleware implements MiddlewareInterface
+final readonly class RouteHandlerMiddleware implements MiddlewareInterface
 {
     /**
      * @param ContainerInterface $container
@@ -48,14 +48,14 @@ final class RouteHandlerMiddleware implements MiddlewareInterface
         try {
             $requestHandler = $this->container->get($key);
             if (false === ($requestHandler instanceof RequestHandlerInterface)) {
-                throw new RuntimeException('Route handler have to implement PSR RequestHandlerInterface.');
+                throw new RuntimeException(sprintf('"%s" - request handler has to implement PSR RequestHandlerInterface.', $key));
             }
 
             return $requestHandler;
         } catch (NotFoundExceptionInterface) {
-            throw new RuntimeException('Route handler not found in container.');
+            throw new RuntimeException(sprintf('"%s" - request handler not found in container.', $key));
         } catch (ContainerExceptionInterface $e) {
-            throw new RuntimeException('Container exception.', 500, $e);
+            throw new RuntimeException(sprintf('Container exception: %s', $e->getMessage()), 0, $e);
         }
     }
 }

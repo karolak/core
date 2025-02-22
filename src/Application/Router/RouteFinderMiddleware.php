@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-final class RouteFinderMiddleware implements MiddlewareInterface
+final readonly class RouteFinderMiddleware implements MiddlewareInterface
 {
     public const string HANDLER_ATTRIBUTE = 'route.handler';
     public const string PARAMETERS_ATTRIBUTE = 'route.parameters';
