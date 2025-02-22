@@ -34,7 +34,7 @@ final class RequestHandlerTest extends TestCase
             ->willReturn($response);
 
         // when
-        new RequestHandler($defaultRequestHandler, [])->handle($request);
+        new RequestHandler($defaultRequestHandler)->handle($request);
     }
 
     /**
@@ -81,7 +81,7 @@ final class RequestHandlerTest extends TestCase
                 });
 
         // when
-        $result = new RequestHandler($defaultRequestHandler, [$middleware1])->handle($request);
+        $result = new RequestHandler($defaultRequestHandler, $middleware1)->handle($request);
 
         // then
         $this->assertEquals($modifiedResponseCode, $result->getStatusCode());
@@ -123,10 +123,11 @@ final class RequestHandlerTest extends TestCase
                 });
 
         // when
-        new RequestHandler($defaultRequestHandler, [
+        new RequestHandler(
+            $defaultRequestHandler,
             $middleware1,
             $middleware2
-        ])->handle($request);
+        )->handle($request);
     }
 
     /**
@@ -180,10 +181,11 @@ final class RequestHandlerTest extends TestCase
                 });
 
         // when
-        $result = new RequestHandler($defaultRequestHandler, [
+        $result = new RequestHandler(
+            $defaultRequestHandler,
             $middleware1,
             $middleware2
-        ])->handle($request);
+        )->handle($request);
 
         // then
         $this->assertEquals($firstResponseCode, $result->getStatusCode());
