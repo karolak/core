@@ -10,16 +10,20 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-final class RequestHandler implements RequestHandlerInterface
+final readonly class RequestHandler implements RequestHandlerInterface
 {
+    /** @var array<int|string,MiddlewareInterface> */
+    private array $middlewares;
+
     /**
      * @param RequestHandlerInterface $defaultRequestHandler
-     * @param array<int,MiddlewareInterface> $middlewares
+     * @param MiddlewareInterface ...$middlewares
      */
     public function __construct(
-        private readonly RequestHandlerInterface $defaultRequestHandler,
-        private array $middlewares = []
+        private RequestHandlerInterface $defaultRequestHandler,
+        MiddlewareInterface ...$middlewares
     ) {
+        $this->middlewares = $middlewares;
     }
 
     /**
@@ -28,11 +32,10 @@ final class RequestHandler implements RequestHandlerInterface
     #[Override]
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $middleware = array_shift($this->middlewares);
+        $middleware = $this->middlewares[0] ?? false;
 
-        return $middleware ?
-            $middleware->process($request, new self($this->defaultRequestHandler, $this->middlewares))
-            :
-            $this->defaultRequestHandler->handle($request);
+        return $middleware
+            ? $middleware->process($request, new self($this->defaultRequestHandler, ...array_slice($this->middlewares, 1)))
+            : $this->defaultRequestHandler->handle($request);
     }
 }
