@@ -39,9 +39,10 @@ final class RouteFinderMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $request->withAttribute(self::HANDLER_ATTRIBUTE, $route[RouterInterface::HANDLER]);
-        $request->withAttribute(self::PARAMETERS_ATTRIBUTE, $route[RouterInterface::PARAMETERS] ?? []);
-
-        return $handler->handle($request);
+        return $handler->handle(
+            $request
+                ->withAttribute(self::HANDLER_ATTRIBUTE, $route[RouterInterface::HANDLER])
+                ->withAttribute(self::PARAMETERS_ATTRIBUTE, $route[RouterInterface::PARAMETERS] ?? [])
+        );
     }
 }
