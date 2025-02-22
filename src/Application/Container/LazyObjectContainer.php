@@ -26,7 +26,7 @@ final class LazyObjectContainer implements ContainerInterface
             foreach ($services as $id => $classes) {
                 $this->container[$id] = new ReflectionClass($classes[0])
                     ->newLazyProxy(
-                        function (object $o) use ($classes) {
+                        function () use ($classes) {
                             $args = array_map(
                                 function (string $class) {
                                     return $this->container[$class];
@@ -38,6 +38,8 @@ final class LazyObjectContainer implements ContainerInterface
                         }
                     );
             }
+
+            $this->container[ContainerInterface::class] = $this;
         } catch (Throwable $origin) {
             throw ContainerException::forInitializationWith($origin);
         }
