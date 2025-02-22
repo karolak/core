@@ -92,4 +92,19 @@ final class LazyObjectContainerTest extends TestCase
         // when
         $container->get(EmptyObject::class);
     }
+
+    /**
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function testShouldContainsItself(): void
+    {
+        // when
+        $container = new LazyObjectContainer();
+
+        // then
+        $this->assertTrue($container->has(ContainerInterface::class));
+        $this->assertInstanceOf(LazyObjectContainer::class, $container->get(ContainerInterface::class));
+    }
 }
