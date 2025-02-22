@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Karolak\Core\Tests\Unit\Application\Router;
 
 use Karolak\Core\Application\Router\Router;
+use Karolak\Core\Application\Router\RoutesImporterInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 #[
@@ -20,15 +22,16 @@ final class RouterTest extends TestCase
 
     /**
      * @return void
+     * @throws Exception
      */
     public function testShouldDispatchRouteWithCorrectMethodWhenPathsAreSame(): void
     {
         // given
-        $routes = [
+        $routesImporter = $this->getRoutesImporter([
             'route1' => ['GET', '/', 'RequestHandler1'],
             'route2' => ['POST', '/', 'RequestHandler2']
-        ];
-        $router = new Router($routes);
+        ]);
+        $router = new Router($routesImporter);
 
         // when
         $d1 = $router->dispatch('GET', '/');
@@ -41,15 +44,16 @@ final class RouterTest extends TestCase
 
     /**
      * @return void
+     * @throws Exception
      */
     public function testShouldDispatchRouteWithCorrectPathWhenMethodsAreSame(): void
     {
         // given
-        $routes = [
+        $routesImporter = $this->getRoutesImporter([
             'route1' => ['GET', '/a', 'RequestHandler1'],
             'route2' => ['GET', '/b', 'RequestHandler2']
-        ];
-        $router = new Router($routes);
+        ]);
+        $router = new Router($routesImporter);
 
         // when
         $d1 = $router->dispatch('GET', '/a');
@@ -62,16 +66,17 @@ final class RouterTest extends TestCase
 
     /**
      * @return void
+     * @throws Exception
      */
     public function testShouldDispatchRouteWithSingleParameter(): void
     {
         // given
-        $routes = [
+        $routesImporter = $this->getRoutesImporter([
             'route1' => ['GET', '/{id}', 'RequestHandler1'],
             'route2' => ['GET', '/a/{id}', 'RequestHandler2'],
             'route3' => ['GET', '/a/{id}/b', 'RequestHandler3']
-        ];
-        $router = new Router($routes);
+        ]);
+        $router = new Router($routesImporter);
 
         // when
         $d1 = $router->dispatch('GET', '/1');
@@ -100,16 +105,17 @@ final class RouterTest extends TestCase
 
     /**
      * @return void
+     * @throws Exception
      */
     public function testShouldDispatchRouteWithMultipleParameters(): void
     {
         // given
-        $routes = [
+        $routesImporter = $this->getRoutesImporter([
             'route1' => ['GET', '/{id}/{num}', 'RequestHandler1'],
             'route2' => ['GET', '/a/{id}/{num}', 'RequestHandler2'],
             'route3' => ['GET', '/a/{id}/b/{num}', 'RequestHandler3']
-        ];
-        $router = new Router($routes);
+        ]);
+        $router = new Router($routesImporter);
 
         // when
         $d1 = $router->dispatch('GET', '/1/2');
@@ -144,14 +150,15 @@ final class RouterTest extends TestCase
 
     /**
      * @return void
+     * @throws Exception
      */
     public function testShouldReturnEmptyArrayWhereRouteNotFound(): void
     {
         // given
-        $routes = [
+        $routesImporter = $this->getRoutesImporter([
             'route1' => ['GET', '/', 'RequestHandler1']
-        ];
-        $router = new Router($routes);
+        ]);
+        $router = new Router($routesImporter);
 
         // when
         $d1 = $router->dispatch('GET', '/a');
@@ -162,14 +169,15 @@ final class RouterTest extends TestCase
 
     /**
      * @return void
+     * @throws Exception
      */
     public function testShouldIgnoreSlashAtTheEndOfPath(): void
     {
         // given
-        $routes = [
+        $routesImporter = $this->getRoutesImporter([
             'route1' => ['GET', '/a', 'RequestHandler1']
-        ];
-        $router = new Router($routes);
+        ]);
+        $router = new Router($routesImporter);
 
         // when
         $d1 = $router->dispatch('GET', '/a');
@@ -182,15 +190,16 @@ final class RouterTest extends TestCase
 
     /**
      * @return void
+     * @throws Exception
      */
     public function testShouldDispatchRouteWithParameterValidation(): void
     {
         // given
-        $routes = [
+        $routesImporter = $this->getRoutesImporter([
             'route1' => ['GET', '/{id:\d+}', 'RequestHandler1'],
             'route2' => ['GET', '/{id:[a-z]+}', 'RequestHandler2']
-        ];
-        $router = new Router($routes);
+        ]);
+        $router = new Router($routesImporter);
 
         // when
         $d1 = $router->dispatch('GET', '/123');
@@ -203,14 +212,15 @@ final class RouterTest extends TestCase
 
     /**
      * @return void
+     * @throws Exception
      */
     public function testParameterShouldBeRequired(): void
     {
         // given
-        $routes = [
+        $routesImporter = $this->getRoutesImporter([
             'route1' => ['GET', '/{id}', 'RequestHandler1']
-        ];
-        $router = new Router($routes);
+        ]);
+        $router = new Router($routesImporter);
 
         // when
         $d1 = $router->dispatch('GET', '/a');
@@ -219,5 +229,21 @@ final class RouterTest extends TestCase
         // then
         $this->assertNotEmpty($d1);
         $this->assertEmpty($d2);
+    }
+
+    /**
+     * @param array<string,array<int,string>> $routes
+     * @return RoutesImporterInterface
+     * @throws Exception
+     */
+    private function getRoutesImporter(array $routes): RoutesImporterInterface
+    {
+        $routesImporter = $this->createMock(RoutesImporterInterface::class);
+        $routesImporter
+            ->expects($this->once())
+            ->method('import')
+            ->willReturn($routes);
+
+        return $routesImporter;
     }
 }

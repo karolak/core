@@ -12,11 +12,15 @@ final class Router implements RouterInterface
     private const int PATH_KEY = 1;
     private const int HANDLER_KEY = 2;
 
+    /** @var array<string,array<int,string>> */
+    private array $routes;
+
     /**
-     * @param array<string,array<int,string>> $routes
+     * @param RoutesImporterInterface $importer
      */
-    public function __construct(private array $routes = [])
+    public function __construct(private readonly RoutesImporterInterface $importer)
     {
+        $this->routes = $this->importer->import();
     }
 
     /**
@@ -30,6 +34,10 @@ final class Router implements RouterInterface
         foreach ($this->routes as $route) {
             if (($route[self::METHOD_KEY] ?? null) !== $method || ($route[self::PATH_KEY] ?? null) === null) {
                 continue;
+            }
+
+            if ($route[self::PATH_KEY] === $path) {
+                return [$route[self::HANDLER_KEY], []];
             }
 
             $routeRegex = preg_replace_callback('/{\w+(:([^}]+))?}/', function ($matches) {
