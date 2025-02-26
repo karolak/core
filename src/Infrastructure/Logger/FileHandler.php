@@ -26,9 +26,9 @@ final readonly class FileHandler implements HandlerInterface
     #[Override]
     public function handle(array $record): void
     {
-        $output = '';
+        $output = $this->config->getRecordTemplate() ?? HandlerInterface::DEFAULT_RECORD_FORMAT;
         foreach ($record as $key => $val) {
-            $output = str_replace('%' . $key . '%', strval($val), $this->config->getRecordTemplate() ?? HandlerInterface::DEFAULT_RECORD_FORMAT);
+            $output = str_replace('%' . $key . '%', strval($val), $output);
         }
         file_put_contents(
             $this->config->getFileLogDirPath() . DIRECTORY_SEPARATOR . date('Y-m-d') . '.log',

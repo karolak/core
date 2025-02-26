@@ -21,34 +21,6 @@ final class FileHandlerTest extends TestCase
      * @return void
      * @throws Exception
      */
-    public function testShouldWriteToFile(): void
-    {
-        // given
-        $config = $this->createMock(LoggerConfigInterface::class);
-        $dirName = DIRECTORY_SEPARATOR . 'tmp';
-        $config
-            ->method('getFileLogDirPath')
-            ->willReturn($dirName);
-        $config
-            ->method('getRecordTemplate')
-            ->willReturn('[%timestamp%] [%level%]: %message%');
-        $handler = new FileHandler($config);
-
-        // when
-        $handler->handle([
-            'level' => 'ERROR',
-            'message' => 'Error message.',
-            'timestamp' => '2025-01-01 00:00:00',
-        ]);
-
-        // then
-        $this->assertFileExists($dirName . DIRECTORY_SEPARATOR . date('Y-m-d') . '.log');
-    }
-
-    /**
-     * @return void
-     * @throws Exception
-     */
     public function testShouldCreateLogDirWhenDoesNotExistsAndWriteToFile(): void
     {
         // given
@@ -61,6 +33,7 @@ final class FileHandlerTest extends TestCase
             ->method('getRecordTemplate')
             ->willReturn('[%timestamp%] [%level%]: %message%');
         $handler = new FileHandler($config);
+        $logFile = $dirName . DIRECTORY_SEPARATOR . date('Y-m-d') . '.log';
 
         // when
         $handler->handle([
@@ -70,6 +43,8 @@ final class FileHandlerTest extends TestCase
         ]);
 
         // then
-        $this->assertFileExists($dirName . DIRECTORY_SEPARATOR . date('Y-m-d') . '.log');
+        $this->assertFileExists($logFile);
+        $this->assertFileIsWritable($logFile);
+        $this->assertStringEqualsFile($logFile, "[2025-01-01 00:00:00] [ERROR]: Error message.\n");
     }
 }
