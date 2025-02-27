@@ -9,6 +9,14 @@ trait DefaultConfigTrait
     /**
      * @return string
      */
+    public function getChannel(): string
+    {
+        return 'app';
+    }
+
+    /**
+     * @return string
+     */
     public function getLogsDirectory(): string
     {
         return DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'app';
@@ -19,7 +27,7 @@ trait DefaultConfigTrait
      */
     public function getLineFormat(): string
     {
-        return '[%timestamp%] [%level%]: %message%';
+        return '[%timestamp%] %channel%.%level%: %message%';
     }
 
     /**
@@ -27,6 +35,6 @@ trait DefaultConfigTrait
      */
     public function getDateTimeFormat(): string
     {
-        return 'c';
+        return 'Y-m-d H:i:s';
     }
 }

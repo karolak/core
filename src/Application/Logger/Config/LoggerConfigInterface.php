@@ -7,6 +7,11 @@ namespace Karolak\Core\Application\Logger\Config;
 interface LoggerConfigInterface
 {
     /**
+     * @return string Logs channel.
+     */
+    public function getChannel(): string;
+
+    /**
      * @return string Path to directory where you want to hold logs files.
      */
     public function getLogsDirectory(): string;

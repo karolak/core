@@ -30,6 +30,7 @@ final class Logger extends AbstractLogger implements LoggerInterface
     {
         $this->handler->handle([
             'timestamp' => new DateTimeImmutable()->format($this->config->getDateTimeFormat()),
+            'channel' => $this->config->getChannel(),
             'level' => is_string($level) ? $level : '',
             'message' => $this->interpolate(strval($message), $context)
         ]);

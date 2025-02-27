@@ -41,6 +41,6 @@ final class LoggerTest extends TestCase
             ->method('handle');
 
         // when
-        $logger->log(LogLevel::ERROR, 'Error message', ['foo' => 'bar']);
+        $logger->log(LogLevel::ERROR, 'Error message {bar}.', ['bar' => 'foo']);
     }
 }

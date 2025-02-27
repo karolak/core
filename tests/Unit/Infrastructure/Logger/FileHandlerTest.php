@@ -35,13 +35,14 @@ final class FileHandlerTest extends TestCase
         // when
         $handler->handle([
             'timestamp' => '2025-01-01 00:00:00',
-            'level' => 'ERROR',
+            'channel' => 'app',
+            'level' => 'error',
             'message' => 'Error message.'
         ]);
 
         // then
         $this->assertFileExists($logFile);
         $this->assertFileIsWritable($logFile);
-        $this->assertStringEqualsFile($logFile, "[2025-01-01 00:00:00] [ERROR]: Error message.\n");
+        $this->assertStringEqualsFile($logFile, "[2025-01-01 00:00:00] app.error: Error message.\n");
     }
 }
