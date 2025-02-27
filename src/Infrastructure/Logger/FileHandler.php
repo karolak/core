@@ -15,8 +15,8 @@ final readonly class FileHandler implements HandlerInterface
      */
     public function __construct(private LoggerConfigInterface $config)
     {
-        if (false === file_exists($this->config->getFileLogDirPath())) {
-            mkdir($this->config->getFileLogDirPath(), 0777, true);
+        if (false === file_exists($this->config->getLogsDirectory())) {
+            mkdir($this->config->getLogsDirectory(), 0777, true);
         }
     }
 
@@ -24,14 +24,14 @@ final readonly class FileHandler implements HandlerInterface
      * @inheritDoc
      */
     #[Override]
-    public function handle(array $record): void
+    public function handle(array $data): void
     {
-        $output = $this->config->getRecordTemplate() ?? HandlerInterface::DEFAULT_RECORD_FORMAT;
-        foreach ($record as $key => $val) {
+        $output = $this->config->getLineFormat();
+        foreach ($data as $key => $val) {
             $output = str_replace('%' . $key . '%', strval($val), $output);
         }
         file_put_contents(
-            $this->config->getFileLogDirPath() . DIRECTORY_SEPARATOR . date('Y-m-d') . '.log',
+            $this->config->getLogsDirectory() . DIRECTORY_SEPARATOR . date('Y-m-d') . '.log',
             $output . PHP_EOL,
             FILE_APPEND
         );

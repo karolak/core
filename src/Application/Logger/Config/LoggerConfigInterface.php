@@ -7,17 +7,17 @@ namespace Karolak\Core\Application\Logger\Config;
 interface LoggerConfigInterface
 {
     /**
-     * @return string
+     * @return string Path to directory where you want to hold logs files.
      */
-    public function getFileLogDirPath(): string;
+    public function getLogsDirectory(): string;
 
     /**
-     * @return string|null
+     * @return string Format for single log line.
      */
-    public function getRecordTemplate(): ?string;
+    public function getLineFormat(): string;
 
     /**
-     * @return string|null
+     * @return string DateTime compatible format in log file.
      */
-    public function getRecordDateTimeFormat(): ?string;
+    public function getDateTimeFormat(): string;
 }

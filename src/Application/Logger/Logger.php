@@ -13,8 +13,6 @@ use Stringable;
 
 final class Logger extends AbstractLogger implements LoggerInterface
 {
-    private const string DEFAULT_DATETIME_FORMAT = 'c';
-
     /**
      * @param LoggerConfigInterface $config
      * @param HandlerInterface $handler
@@ -31,9 +29,9 @@ final class Logger extends AbstractLogger implements LoggerInterface
     public function log($level, Stringable|string $message, array $context = []): void
     {
         $this->handler->handle([
+            'timestamp' => new DateTimeImmutable()->format($this->config->getDateTimeFormat()),
             'level' => is_string($level) ? $level : '',
-            'message' => $this->interpolate(strval($message), $context),
-            'timestamp' => new DateTimeImmutable()->format($this->config->getRecordDateTimeFormat() ?? self::DEFAULT_DATETIME_FORMAT),
+            'message' => $this->interpolate(strval($message), $context)
         ]);
     }
 
