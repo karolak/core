@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Application\Container;
 
+use Karolak\Core\Application\Container\Config\ContainerConfigInterface;
 use Karolak\Core\Application\Container\Exception\ContainerEntryNotFoundException;
 use Karolak\Core\Application\Container\Exception\ContainerException;
 use Override;
@@ -17,13 +18,13 @@ final class LazyObjectContainer implements ContainerInterface
     private array $container = [];
 
     /**
-     * @param array<class-string,array<int,class-string>> $services
+     * @param ContainerConfigInterface $config
      * @throws ContainerException
      */
-    public function __construct(array $services = [])
+    public function __construct(ContainerConfigInterface $config)
     {
         try {
-            foreach ($services as $id => $classes) {
+            foreach ($config->getServices() as $id => $classes) {
                 $this->container[$id] = new ReflectionClass($classes[0])
                     ->newLazyProxy(
                         function () use ($classes) {
