@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Tests\Unit\Application\Router;
 
+use Karolak\Core\Application\Router\Config\RouterConfigInterface;
 use Karolak\Core\Application\Router\Router;
-use Karolak\Core\Application\Router\RoutesImporterInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;
@@ -233,15 +233,15 @@ final class RouterTest extends TestCase
 
     /**
      * @param array<string,array<int,string>> $routes
-     * @return RoutesImporterInterface
+     * @return RouterConfigInterface
      * @throws Exception
      */
-    private function getRoutesImporter(array $routes): RoutesImporterInterface
+    private function getRoutesImporter(array $routes): RouterConfigInterface
     {
-        $routesImporter = $this->createMock(RoutesImporterInterface::class);
+        $routesImporter = $this->createMock(RouterConfigInterface::class);
         $routesImporter
             ->expects($this->once())
-            ->method('import')
+            ->method('getRoutes')
             ->willReturn($routes);
 
         return $routesImporter;

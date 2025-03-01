@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Application\Router;
 
+use Karolak\Core\Application\Router\Config\RouterConfigInterface;
 use Override;
 
 final class Router implements RouterInterface
@@ -16,11 +17,11 @@ final class Router implements RouterInterface
     private array $routes;
 
     /**
-     * @param RoutesImporterInterface $importer
+     * @param RouterConfigInterface $config
      */
-    public function __construct(private readonly RoutesImporterInterface $importer)
+    public function __construct(RouterConfigInterface $config)
     {
-        $this->routes = $this->importer->import();
+        $this->routes = $config->getRoutes();
     }
 
     /**
