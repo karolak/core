@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Infrastructure\Logger;
 
-use Karolak\Core\Application\Logger\Config\LoggerConfigInterface;
 use Karolak\Core\Application\Logger\HandlerInterface;
+use Karolak\Core\Application\Logger\LoggerConfigInterface;
 use Override;
 
 final readonly class FileHandler implements HandlerInterface

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Karolak\Core\Application\Logger;
 
 use DateTimeImmutable;
-use Karolak\Core\Application\Logger\Config\LoggerConfigInterface;
 use Override;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;

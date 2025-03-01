@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Karolak\Core\Application\Container\Exception;
+namespace Karolak\Core\Application\Container;
 
 use Exception;
 use Psr\Container\ContainerExceptionInterface;

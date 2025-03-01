@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Tests\Unit\Application\Logger;
 
-use Karolak\Core\Application\Logger\Config\DefaultConfigTrait;
-use Karolak\Core\Application\Logger\Config\LoggerConfigInterface;
+use Karolak\Core\Application\Logger\DefaultConfigTrait;
 use Karolak\Core\Application\Logger\HandlerInterface;
 use Karolak\Core\Application\Logger\Logger;
+use Karolak\Core\Application\Logger\LoggerConfigInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\UsesClass;
@@ -29,7 +29,7 @@ final class LoggerTest extends TestCase
     public function testShouldLog(): void
     {
         // given
-        $config = new class implements LoggerConfigInterface {
+        $config = new readonly class implements LoggerConfigInterface {
             use DefaultConfigTrait;
         };
         $handler = $this->createMock(HandlerInterface::class);

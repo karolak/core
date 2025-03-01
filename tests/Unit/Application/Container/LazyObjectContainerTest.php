@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Tests\Unit\Application\Container;
 
-use Karolak\Core\Application\Container\Config\ContainerConfigInterface;
-use Karolak\Core\Application\Container\Exception\ContainerEntryNotFoundException;
-use Karolak\Core\Application\Container\Exception\ContainerException;
+use Karolak\Core\Application\Container\ContainerConfigInterface;
+use Karolak\Core\Application\Container\ContainerEntryNotFoundException;
+use Karolak\Core\Application\Container\ContainerException;
 use Karolak\Core\Application\Container\LazyObjectContainer;
 use Karolak\Core\Tests\Mock\EmptyInterface;
 use Karolak\Core\Tests\Mock\EmptyObject;
@@ -100,7 +100,7 @@ final class LazyObjectContainerTest extends TestCase
      */
     private function getConfig(array $services = []): ContainerConfigInterface
     {
-        return new class($services) implements ContainerConfigInterface {
+        return new readonly class($services) implements ContainerConfigInterface {
             /**
              * @param array<class-string,array<int,class-string>> $services
              */
