@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Tests\Unit\Application\Router;
 
-use Karolak\Core\Application\Router\Config\RouterConfigInterface;
 use Karolak\Core\Application\Router\Router;
+use Karolak\Core\Application\Router\RouterConfigInterface;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
-use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 #[
@@ -22,7 +22,6 @@ final class RouterTest extends TestCase
 
     /**
      * @return void
-     * @throws Exception
      */
     public function testShouldDispatchRouteWithCorrectMethodWhenPathsAreSame(): void
     {
@@ -44,7 +43,6 @@ final class RouterTest extends TestCase
 
     /**
      * @return void
-     * @throws Exception
      */
     public function testShouldDispatchRouteWithCorrectPathWhenMethodsAreSame(): void
     {
@@ -66,7 +64,6 @@ final class RouterTest extends TestCase
 
     /**
      * @return void
-     * @throws Exception
      */
     public function testShouldDispatchRouteWithSingleParameter(): void
     {
@@ -105,7 +102,6 @@ final class RouterTest extends TestCase
 
     /**
      * @return void
-     * @throws Exception
      */
     public function testShouldDispatchRouteWithMultipleParameters(): void
     {
@@ -150,7 +146,6 @@ final class RouterTest extends TestCase
 
     /**
      * @return void
-     * @throws Exception
      */
     public function testShouldReturnEmptyArrayWhereRouteNotFound(): void
     {
@@ -169,7 +164,6 @@ final class RouterTest extends TestCase
 
     /**
      * @return void
-     * @throws Exception
      */
     public function testShouldIgnoreSlashAtTheEndOfPath(): void
     {
@@ -190,7 +184,6 @@ final class RouterTest extends TestCase
 
     /**
      * @return void
-     * @throws Exception
      */
     public function testShouldDispatchRouteWithParameterValidation(): void
     {
@@ -212,7 +205,6 @@ final class RouterTest extends TestCase
 
     /**
      * @return void
-     * @throws Exception
      */
     public function testParameterShouldBeRequired(): void
     {
@@ -234,16 +226,23 @@ final class RouterTest extends TestCase
     /**
      * @param array<string,array<int,string>> $routes
      * @return RouterConfigInterface
-     * @throws Exception
      */
     private function getRoutesImporter(array $routes): RouterConfigInterface
     {
-        $routesImporter = $this->createMock(RouterConfigInterface::class);
-        $routesImporter
-            ->expects($this->once())
-            ->method('getRoutes')
-            ->willReturn($routes);
+        return new readonly class($routes) implements RouterConfigInterface {
+            /**
+             * @param array<string,array<int,string>> $routes
+             */
+            public function __construct(private array $routes = []) {}
 
-        return $routesImporter;
+            /**
+             * @return array<string,array<int,string>>
+             */
+            #[Override]
+            public function getRoutes(): array
+            {
+                return $this->routes;
+            }
+        };
     }
 }

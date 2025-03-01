@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Application\Router;
 
-use Karolak\Core\Application\Router\Config\RouterConfigInterface;
 use Override;
 
 final class Router implements RouterInterface

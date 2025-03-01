@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Application\Container;
 
-use Karolak\Core\Application\Container\Config\ContainerConfigInterface;
-use Karolak\Core\Application\Container\Exception\ContainerEntryNotFoundException;
-use Karolak\Core\Application\Container\Exception\ContainerException;
 use Override;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;

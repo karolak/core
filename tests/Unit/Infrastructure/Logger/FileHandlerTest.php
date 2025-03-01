@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Tests\Unit\Infrastructure\Logger;
 
-use Karolak\Core\Application\Logger\Config\DefaultConfigTrait;
-use Karolak\Core\Application\Logger\Config\LoggerConfigInterface;
+use Karolak\Core\Application\Logger\DefaultConfigTrait;
+use Karolak\Core\Application\Logger\LoggerConfigInterface;
 use Karolak\Core\Infrastructure\Logger\FileHandler;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversTrait;

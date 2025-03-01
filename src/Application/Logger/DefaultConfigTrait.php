@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Karolak\Core\Application\Logger\Config;
+namespace Karolak\Core\Application\Logger;
 
 trait DefaultConfigTrait
 {
