@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Tests\Unit\Application\Container;
 
+use Karolak\Core\Application\Container\Config\ContainerConfigInterface;
 use Karolak\Core\Application\Container\Exception\ContainerEntryNotFoundException;
 use Karolak\Core\Application\Container\Exception\ContainerException;
 use Karolak\Core\Application\Container\LazyObjectContainer;
 use Karolak\Core\Tests\Mock\EmptyInterface;
 use Karolak\Core\Tests\Mock\EmptyObject;
 use Karolak\Core\Tests\Mock\ObjectWithDependency;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -25,32 +27,16 @@ final class LazyObjectContainerTest extends TestCase
 {
     /**
      * @return void
-     */
-    public function testShouldCreateContainerInstance(): void
-    {
-        // when
-        $container = new LazyObjectContainer();
-
-        // then
-        $this->assertInstanceOf(LazyObjectContainer::class, $container);
-        $this->assertInstanceOf(ContainerInterface::class, $container);
-    }
-
-    /**
-     * @return void
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      */
     public function testShouldAddEntries(): void
     {
-        // given
-        $services = [
+        // when
+        $container = new LazyObjectContainer($this->getConfig([
             EmptyInterface::class => [EmptyObject::class],
             ObjectWithDependency::class => [ObjectWithDependency::class, EmptyInterface::class]
-        ];
-
-        // when
-        $container = new LazyObjectContainer($services);
+        ]));
 
         // then
         $this->assertTrue($container->has(EmptyInterface::class));
@@ -71,9 +57,9 @@ final class LazyObjectContainerTest extends TestCase
         $this->expectException(ContainerException::class);
 
         // when
-        new LazyObjectContainer([
+        new LazyObjectContainer($this->getConfig([
             EmptyInterface::class => [EmptyInterface::class]
-        ]);
+        ]));
     }
 
     /**
@@ -87,7 +73,7 @@ final class LazyObjectContainerTest extends TestCase
         $this->expectException(NotFoundExceptionInterface::class);
 
         // given
-        $container = new LazyObjectContainer();
+        $container = new LazyObjectContainer($this->getConfig());
 
         // when
         $container->get(EmptyObject::class);
@@ -101,10 +87,33 @@ final class LazyObjectContainerTest extends TestCase
     public function testShouldContainsItself(): void
     {
         // when
-        $container = new LazyObjectContainer();
+        $container = new LazyObjectContainer($this->getConfig());
 
         // then
         $this->assertTrue($container->has(ContainerInterface::class));
         $this->assertInstanceOf(LazyObjectContainer::class, $container->get(ContainerInterface::class));
+    }
+
+    /**
+     * @param array<class-string,array<int,class-string>> $services
+     * @return ContainerConfigInterface
+     */
+    private function getConfig(array $services = []): ContainerConfigInterface
+    {
+        return new class($services) implements ContainerConfigInterface {
+            /**
+             * @param array<class-string,array<int,class-string>> $services
+             */
+            public function __construct(private array $services = []) {}
+
+            /**
+             * @return array<class-string,array<int,class-string>>
+             */
+            #[Override]
+            public function getServices(): array
+            {
+                return $this->services;
+            }
+        };
     }
 }
