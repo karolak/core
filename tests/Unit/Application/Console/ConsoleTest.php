@@ -26,23 +26,32 @@ final class ConsoleTest extends TestCase
      * @return void
      * @throws Exception
      */
-    public function testRunCommandWithSuccess(): void
+    public function testShouldRunCommandWithSuccess(): void
     {
-        // given
         $commandLine = 'bin/console test';
+
+        // given
         $command = $this->createMock(CommandInterface::class);
-        $config = $this->getConfig(['test' => $command::class]);
         $command
             ->expects($this->once())
             ->method('run')
             ->willReturn(Status::SUCCESS);
+
         $container = $this->createMock(ContainerInterface::class);
         $container
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('get')
-            ->with($command::class)
-            ->willReturn($command);
-        $console = new Console($config, $container);
+            ->willReturnCallback(
+                function (string $key) use ($command){
+                    return match ($key) {
+                        ConsoleConfigInterface::class => $this->getConfig(['test' => $command::class]),
+                        $command::class => $command,
+                        default => null
+                    };
+                }
+            );
+
+        $console = new Console($container);
 
         // when
         $result = $console->run(explode(' ', $commandLine));
@@ -55,16 +64,108 @@ final class ConsoleTest extends TestCase
      * @return void
      * @throws Exception
      */
-    public function testShouldReturnExceptionStatusWhenCommandNotFound(): void
+    public function testShouldReturnExceptionStatusWhenConfigNotFound(): void
     {
+        $commandLine = 'bin/console test';
+        $this->expectOutputString('Object not found in container.');
+
         // given
-        $commandLine = 'bin/console not_found';
-        $config = $this->getConfig(['test' => CommandInterface::class]);
         $container = $this->createMock(ContainerInterface::class);
-        $console = new Console($config, $container);
+        $container
+            ->expects($this->once())
+            ->method('get')
+            ->willThrowException(new \Exception('Object not found in container.'));
+
+        $console = new Console($container);
 
         // when
+        $result = $console->run(explode(' ', $commandLine));
+
+        // then
+        $this->assertEquals(Status::EXCEPTION, $result);
+    }
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function testShouldReturnExceptionStatusWhenConfigNotImplementConsoleConfigInterface(): void
+    {
+        $commandLine = 'bin/console test';
+        $this->expectOutputRegex('/ConsoleConfigInterface/');
+
+        // given
+        $container = $this->createMock(ContainerInterface::class);
+        $container
+            ->expects($this->once())
+            ->method('get')
+            ->willReturn(new stdClass());
+
+        $console = new Console($container);
+
+        // when
+        $result = $console->run(explode(' ', $commandLine));
+
+        // then
+        $this->assertEquals(Status::EXCEPTION, $result);
+    }
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function testShouldReturnExceptionStatusWhenCommandNotFound(): void
+    {
+        $commandLine = 'bin/console not_found';
         $this->expectOutputRegex('/not_found/');
+
+        // given
+        $command = $this->createMock(CommandInterface::class);
+
+        $container = $this->createMock(ContainerInterface::class);
+        $container
+            ->expects($this->once())
+            ->method('get')
+            ->willReturn($this->getConfig(['test' => $command::class]));
+
+        $console = new Console($container);
+
+        // when
+        $result = $console->run(explode(' ', $commandLine));
+
+        // then
+        $this->assertEquals(Status::EXCEPTION, $result);
+    }
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function testShouldReturnExceptionStatusWhenCommandNotFoundInContainer(): void
+    {
+        $commandLine = 'bin/console test';
+        $this->expectOutputString('Object not found in container.');
+
+        // given
+        $command = $this->createMock(CommandInterface::class);
+
+        $container = $this->createMock(ContainerInterface::class);
+        $container
+            ->expects($this->exactly(2))
+            ->method('get')
+            ->willReturnCallback(
+                function (string $key) use ($command){
+                    return match ($key) {
+                        ConsoleConfigInterface::class => $this->getConfig(['test' => $command::class]),
+                        $command::class => throw new \Exception('Object not found in container.'),
+                        default => null
+                    };
+                }
+            );
+
+        $console = new Console($container);
+
+        // when
         $result = $console->run(explode(' ', $commandLine));
 
         // then
@@ -77,21 +178,23 @@ final class ConsoleTest extends TestCase
      */
     public function testShouldReturnExceptionStatusWhenCommandNotImplementCommandInterface(): void
     {
-        // given
         $commandLine = 'bin/console test';
+        $this->expectOutputRegex('/CommandInterface/');
+
+        // given
         $command = new stdClass();
+
         $config = $this->getConfig(['test' => $command::class]);
+
         $container = $this->createMock(ContainerInterface::class);
         $container
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('get')
-            ->with($command::class)
-            ->willReturn($command);
+            ->willReturnOnConsecutiveCalls($config, $command);
 
-        $console = new Console($config, $container);
+        $console = new Console($container);
 
         // when
-        $this->expectOutputRegex('/CommandInterface/');
         $result = $console->run(explode(' ', $commandLine));
 
         // then

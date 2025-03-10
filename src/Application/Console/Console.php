@@ -6,34 +6,35 @@ namespace Karolak\Core\Application\Console;
 
 use Exception;
 use Override;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
 
 final readonly class Console implements ConsoleInterface
 {
     /**
-     * @param ConsoleConfigInterface $config
      * @param ContainerInterface $container
      */
-    public function __construct(
-        private ConsoleConfigInterface $config,
-        private ContainerInterface $container
-    ) {
+    public function __construct(private ContainerInterface $container)
+    {
     }
 
     /**
-     * @param array<int,string> $args
+     * @param array<int,string> $argv
      * @return Status
      */
     #[Override]
-    public function run(array $args): Status
+    public function run(array $argv): Status
     {
         try {
-            $commandName = $args[1] ?? '';
-            $commandClass = $this->config->getCommands()[$commandName] ?? null;
+            $config = $this->getConfig();
+            $commandName = $argv[1] ?? '';
+            $commandClass = $config->getCommands()[$commandName] ?? null;
             if (null === $commandClass) {
-                throw new Exception(sprintf('Command "%s" not found.', $commandName));
+                throw new Exception(sprintf('Command "%s" not found in container.', $commandName));
             }
+
             $command = $this->container->get($commandClass);
             if (false === ($command instanceof CommandInterface)) {
                 throw new Exception(sprintf('Command class "%s" should implement CommandInterface.', $commandClass));
@@ -45,5 +46,21 @@ final readonly class Console implements ConsoleInterface
 
             return Status::EXCEPTION;
         }
+    }
+
+    /**
+     * @return ConsoleConfigInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     */
+    private function getConfig(): ConsoleConfigInterface
+    {
+        $config = $this->container->get(ConsoleConfigInterface::class);
+        if (false === ($config instanceof ConsoleConfigInterface)) {
+            throw new Exception(sprintf('Container key "%s" should implement ConsoleConfigInterface.', ConsoleConfigInterface::class));
+        }
+
+        return $config;
     }
 }
