@@ -6,7 +6,7 @@ namespace Karolak\Core\Application\Console;
 
 use Override;
 
-final readonly class Input implements InputInterface
+final readonly class StandardInput implements InputInterface
 {
     /**
      * @param array<string,string> $arguments

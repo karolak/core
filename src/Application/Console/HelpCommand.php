@@ -25,7 +25,7 @@ final readonly class HelpCommand implements CommandInterface
         $output->writeln('Available commands:');
 
         foreach ($this->consoleConfig->getCommands() as $command => $commandClass) {
-            $output->writeln('* ' . $command . ' - ' . $this->getCommandDescription($commandClass, 'NO DESCRIPTION'));
+            $output->writeln('* "' . $command . '" - ' . $this->getCommandDescription($commandClass, 'NO DESCRIPTION'));
         }
 
         return Status::SUCCESS;

@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Karolak\Core\Tests\Unit\Application\Console;
 
 use Karolak\Core\Application\Console\ArgumentNotFoundException;
-use Karolak\Core\Application\Console\Input;
 use Karolak\Core\Application\Console\InputParser;
 use Karolak\Core\Application\Console\OptionNotFoundException;
+use Karolak\Core\Application\Console\StandardInput;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
 #[
     UsesClass(InputParser::class),
-    CoversClass(InputParser::class),
-    CoversClass(Input::class)
+    UsesClass(StandardInput::class),
+    CoversClass(InputParser::class)
 ]
 final class InputParserTest extends TestCase
 {

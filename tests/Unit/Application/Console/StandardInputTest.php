@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Karolak\Core\Tests\Unit\Application\Console;
 
 use Karolak\Core\Application\Console\ArgumentNotFoundException;
-use Karolak\Core\Application\Console\Input;
 use Karolak\Core\Application\Console\OptionNotFoundException;
+use Karolak\Core\Application\Console\StandardInput;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
 #[
-    UsesClass(Input::class),
-    CoversClass(Input::class),
+    UsesClass(StandardInput::class),
+    CoversClass(StandardInput::class),
     CoversClass(ArgumentNotFoundException::class),
     CoversClass(OptionNotFoundException::class)
 ]
-final class InputTest extends TestCase
+final class StandardInputTest extends TestCase
 {
     /**
      * @return void
@@ -26,10 +26,9 @@ final class InputTest extends TestCase
     {
         // given
         $arguments = ['arg1' => 'value1'];
-        $input = new Input($arguments);
 
         // when
-        $result = $input->hasArgument('arg1');
+        $result = new StandardInput($arguments)->hasArgument('arg1');
 
         // then
         $this->assertTrue($result);
@@ -42,10 +41,9 @@ final class InputTest extends TestCase
     {
         // given
         $arguments = ['arg1' => 'value1'];
-        $input = new Input($arguments);
 
         // when
-        $result = $input->hasArgument('not_found');
+        $result = new StandardInput($arguments)->hasArgument('not_found');
 
         // then
         $this->assertFalse($result);
@@ -59,10 +57,9 @@ final class InputTest extends TestCase
     {
         // given
         $arguments = ['arg1' => 'value1'];
-        $input = new Input($arguments);
 
         // when
-        $result = $input->getArgument('arg1');
+        $result = new StandardInput($arguments)->getArgument('arg1');
 
         // then
         $this->assertEquals('value1', $result);
@@ -75,10 +72,9 @@ final class InputTest extends TestCase
     {
         // given
         $arguments = ['arg1' => 'value1', 'arg2' => 'value2'];
-        $input = new Input($arguments);
 
         // when
-        $result = $input->getArguments();
+        $result = new StandardInput($arguments)->getArguments();
 
         // then
         $this->assertEquals($arguments, $result);
@@ -89,11 +85,8 @@ final class InputTest extends TestCase
      */
     public function testShouldGetNoArguments(): void
     {
-        // given
-        $input = new Input();
-
         // when
-        $result = $input->getArguments();
+        $result = new StandardInput()->getArguments();
 
         // then
         $this->assertEmpty($result);
@@ -108,11 +101,8 @@ final class InputTest extends TestCase
         // then
         $this->expectException(ArgumentNotFoundException::class);
 
-        // given
-        $input = new Input();
-
         // when
-        $input->getArgument('arg1');
+        new StandardInput()->getArgument('arg1');
     }
 
 
@@ -123,10 +113,9 @@ final class InputTest extends TestCase
     {
         // given
         $options = ['option1' => 'value1'];
-        $input = new Input([], $options);
 
         // when
-        $result = $input->hasOption('option1');
+        $result = new StandardInput([], $options)->hasOption('option1');
 
         // then
         $this->assertTrue($result);
@@ -139,10 +128,9 @@ final class InputTest extends TestCase
     {
         // given
         $options = ['option1' => 'value1'];
-        $input = new Input([], $options);
 
         // when
-        $result = $input->hasOption('not_found');
+        $result = new StandardInput([], $options)->hasOption('not_found');
 
         // then
         $this->assertFalse($result);
@@ -156,7 +144,7 @@ final class InputTest extends TestCase
     {
         // given
         $options = ['option1' => true, 'option2' => false, 'option3' => 'value1', 'option4' => ['a']];
-        $input = new Input([], $options);
+        $input = new StandardInput([], $options);
 
         // when
         $resultTrue = $input->getOption('option1');
@@ -178,10 +166,9 @@ final class InputTest extends TestCase
     {
         // given
         $options = ['option1' => 'value1', 'option2' => 'value2'];
-        $input = new Input([], $options);
 
         // when
-        $result = $input->getOptions();
+        $result = new StandardInput([], $options)->getOptions();
 
         // then
         $this->assertEquals($options, $result);
@@ -192,11 +179,8 @@ final class InputTest extends TestCase
      */
     public function testShouldGetNoOption(): void
     {
-        // given
-        $input = new Input();
-
         // when
-        $result = $input->getOptions();
+        $result = new StandardInput()->getOptions();
 
         // then
         $this->assertEmpty($result);
@@ -210,10 +194,7 @@ final class InputTest extends TestCase
         // then
         $this->expectException(OptionNotFoundException::class);
 
-        // given
-        $input = new Input();
-
         // when
-        $input->getOption('option1');
+        new StandardInput()->getOption('option1');
     }
 }

@@ -35,7 +35,7 @@ final readonly class InputParser implements InputParserInterface
 
         $combineCount = min(count($argNames), count($arguments));
 
-        return new Input(
+        return new StandardInput(
             array_combine(
                 array_slice($argNames, 0, $combineCount),
                 array_slice($arguments, 0, $combineCount)
