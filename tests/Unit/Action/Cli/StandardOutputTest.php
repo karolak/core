@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Karolak\Core\Tests\Unit\Application\Console;
+namespace Karolak\Core\Tests\Unit\Action\Cli;
 
-use Karolak\Core\Application\Console\StandardOutput;
+use Karolak\Core\Action\Cli\StandardOutput;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;

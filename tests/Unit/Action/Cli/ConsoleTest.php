@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Karolak\Core\Tests\Unit\Application\Console;
+namespace Karolak\Core\Tests\Unit\Action\Cli;
 
-use Karolak\Core\Application\Console\CommandArgument;
-use Karolak\Core\Application\Console\Console;
-use Karolak\Core\Application\Console\ConsoleConfigInterface;
-use Karolak\Core\Application\Console\InputInterface;
-use Karolak\Core\Application\Console\InputParserInterface;
-use Karolak\Core\Application\Console\OutputInterface;
-use Karolak\Core\Application\Console\Status;
+use Karolak\Core\Action\Cli\CommandArgument;
+use Karolak\Core\Action\Cli\Console;
+use Karolak\Core\Action\Cli\ConsoleConfigInterface;
+use Karolak\Core\Action\Cli\InputInterface;
+use Karolak\Core\Action\Cli\InputParserInterface;
+use Karolak\Core\Action\Cli\OutputInterface;
+use Karolak\Core\Action\Cli\Status;
 use Karolak\Core\Tests\Mock\EmptyCommand;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;

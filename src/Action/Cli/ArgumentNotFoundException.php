@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Karolak\Core\Application\Console;
+namespace Karolak\Core\Action\Cli;
 
 use Exception;
 
-final class OptionNotFoundException extends Exception
+final class ArgumentNotFoundException extends Exception
 {
     /**
      * @param string $name
@@ -14,6 +14,6 @@ final class OptionNotFoundException extends Exception
      */
     public static function forName(string $name): self
     {
-        return new self(sprintf('Input option not found for name %s.', $name));
+        return new self(sprintf('Input argument not found for name %s.', $name));
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Karolak\Core\Application\Console;
+namespace Karolak\Core\Action\Cli;
 
 use Attribute;
 

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Tests\Mock;
 
-use Karolak\Core\Application\Console\CommandArgument;
-use Karolak\Core\Application\Console\CommandDescription;
-use Karolak\Core\Application\Console\CommandInterface;
-use Karolak\Core\Application\Console\InputInterface;
-use Karolak\Core\Application\Console\OutputInterface;
-use Karolak\Core\Application\Console\Status;
+use Karolak\Core\Action\Cli\CommandArgument;
+use Karolak\Core\Action\Cli\CommandDescription;
+use Karolak\Core\Action\Cli\CommandInterface;
+use Karolak\Core\Action\Cli\InputInterface;
+use Karolak\Core\Action\Cli\OutputInterface;
+use Karolak\Core\Action\Cli\Status;
 use Override;
 
 #[

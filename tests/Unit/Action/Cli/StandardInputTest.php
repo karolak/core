@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Karolak\Core\Tests\Unit\Application\Console;
+namespace Karolak\Core\Tests\Unit\Action\Cli;
 
-use Karolak\Core\Application\Console\ArgumentNotFoundException;
-use Karolak\Core\Application\Console\OptionNotFoundException;
-use Karolak\Core\Application\Console\StandardInput;
+use Karolak\Core\Action\Cli\ArgumentNotFoundException;
+use Karolak\Core\Action\Cli\OptionNotFoundException;
+use Karolak\Core\Action\Cli\StandardInput;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
