@@ -9,6 +9,9 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS)]
 final readonly class CommandDescription
 {
+    /**
+     * @param string $description
+     */
     public function __construct(
         private string $description
     ) {

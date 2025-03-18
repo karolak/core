@@ -11,6 +11,9 @@ use ReflectionException;
 #[CommandDescription('Help command.')]
 final readonly class HelpCommand implements CommandInterface
 {
+    /**
+     * @param ConsoleConfigInterface $consoleConfig
+     */
     public function __construct(
         private ConsoleConfigInterface $consoleConfig
     ) {

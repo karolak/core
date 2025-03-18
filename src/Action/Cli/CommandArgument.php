@@ -9,6 +9,9 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 final readonly class CommandArgument
 {
+    /**
+     * @param string $name
+     */
     public function __construct(
         private string $name
     ) {
