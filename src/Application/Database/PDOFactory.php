@@ -8,12 +8,12 @@ use Override;
 use PDO;
 use PDOException;
 
-final class PDOFactory implements PDOFactoryInterface
+final readonly class PDOFactory implements PDOFactoryInterface
 {
     /**
      * @param DatabaseConfigInterface $config
      */
-    public function __construct(private readonly DatabaseConfigInterface $config)
+    public function __construct(private DatabaseConfigInterface $config)
     {
     }
 
