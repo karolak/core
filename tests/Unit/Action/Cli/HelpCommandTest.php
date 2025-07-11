@@ -13,15 +13,12 @@ use Karolak\Core\Action\Cli\OutputInterface;
 use Karolak\Core\Action\Cli\Status;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 #[
-    UsesClass(HelpCommand::class),
-    UsesClass(CommandDescription::class),
     CoversClass(HelpCommand::class),
-    CoversClass(CommandDescription::class),
+    CoversClass(CommandDescription::class)
 ]
 final class HelpCommandTest extends TestCase
 {

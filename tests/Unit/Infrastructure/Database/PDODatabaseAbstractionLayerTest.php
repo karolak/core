@@ -13,16 +13,14 @@ use PDO;
 use PDOException;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 #[
-    UsesClass(PDODatabaseAbstractionLayer::class),
+    CoversClass(PDODatabaseAbstractionLayer::class),
     CoversClass(StorageException::class),
     CoversClass(DisconnectedException::class),
-    CoversClass(TransactionException::class),
-    CoversClass(PDODatabaseAbstractionLayer::class)
+    CoversClass(TransactionException::class)
 ]
 final class PDODatabaseAbstractionLayerTest extends TestCase
 {

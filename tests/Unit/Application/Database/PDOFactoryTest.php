@@ -10,18 +10,17 @@ use Karolak\Core\Application\Database\StorageException;
 use Override;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
 #[
-    UsesClass(PDOFactory::class),
-    UsesClass(StorageException::class),
-    CoversClass(PDOFactory::class)
+    CoversClass(PDOFactory::class),
+    CoversClass(StorageException::class)
 ]
 final class PDOFactoryTest extends TestCase
 {
     /**
      * @return void
+     * @throws StorageException
      */
     public function testShouldCreatePDOObject(): void
     {

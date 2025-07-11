@@ -13,9 +13,8 @@ use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
 #[
-    UsesClass(InputParser::class),
-    UsesClass(StandardInput::class),
-    CoversClass(InputParser::class)
+    CoversClass(InputParser::class),
+    UsesClass(StandardInput::class)
 ]
 final class InputParserTest extends TestCase
 {

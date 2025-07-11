@@ -7,7 +7,6 @@ namespace Karolak\Core\Tests\Unit\Application\Router;
 use Karolak\Core\Application\Router\RouteFinderMiddleware;
 use Karolak\Core\Application\Router\RouteHandlerMiddleware;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -19,10 +18,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 use stdClass;
 
-#[
-    UsesClass(RouteHandlerMiddleware::class),
-    CoversClass(RouteHandlerMiddleware::class)
-]
+#[CoversClass(RouteHandlerMiddleware::class)]
 final class RouteHandlerMiddlewareTest extends TestCase
 {
     /**

@@ -8,13 +8,9 @@ use Karolak\Core\Application\Router\Router;
 use Karolak\Core\Application\Router\RouterConfigInterface;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
-#[
-    UsesClass(Router::class),
-    CoversClass(Router::class)
-]
+#[CoversClass(Router::class)]
 final class RouterTest extends TestCase
 {
     private const int ROUTE_HANDLER_KEY = 0;
