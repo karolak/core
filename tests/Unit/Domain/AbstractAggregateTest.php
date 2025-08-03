@@ -5,187 +5,69 @@ declare(strict_types=1);
 namespace Karolak\Core\Tests\Unit\Domain;
 
 use Karolak\Core\Domain\AbstractAggregate;
-use Karolak\Core\Domain\EventInterface;
-use Karolak\Core\Domain\MissingMethodException;
-use Karolak\Core\Domain\NoEventsProvidedException;
+use Karolak\Core\Domain\IdInterface;
 use Karolak\Core\Tests\Mock\EmptyEvent;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 #[
-    CoversClass(AbstractAggregate::class),
-    CoversClass(NoEventsProvidedException::class),
-    CoversClass(MissingMethodException::class)
+    CoversClass(AbstractAggregate::class)
 ]
 final class AbstractAggregateTest extends TestCase
 {
     /**
      * @return void
+     * @throws Exception
      */
-    public function testShouldNotReturnAnyEventRecords(): void
+    public function testShouldRecordEventAndExtractIt(): void
     {
         // given
-        $entity = new class() extends AbstractAggregate {};
-
-        // when
-        $events = $entity->releaseEvents();
-
-        // then
-        $this->assertCount(0, $events);
-    }
-
-    /**
-     * @return void
-     */
-    public function testShouldRecordEventAndReturnIt(): void
-    {
-        // given
-        $entity = new class() extends AbstractAggregate {
-            public function __construct() {
-                $this->recordEvent(new class() implements EventInterface {});
-            }
-        };
-
-        // when
-        $events = $entity->releaseEvents();
-
-        // then
-        $this->assertCount(1, $events);
-    }
-
-    /**
-     * @return void
-     * @throws MissingMethodException
-     */
-    public function testShouldReturnExceptionWhenTryRecreateEntityFromNoEvents(): void
-    {
-        // then
-        $this->expectException(NoEventsProvidedException::class);
-
-        // when
-        AbstractAggregate::recreate([]);
-    }
-
-    /**
-     * @return void
-     * @throws NoEventsProvidedException
-     */
-    public function testShouldReturnExceptionWhenTryRecreateEntityWhenCreationMethodNotFound(): void
-    {
-        // then
-        $this->expectException(MissingMethodException::class);
-
-        // when
-        AbstractAggregate::recreate([
-            new EmptyEvent()
-        ]);
-    }
-
-    /**
-     * @return void
-     * @throws MissingMethodException
-     * @throws NoEventsProvidedException
-     */
-    public function testShouldRecreateEntityWithOnlyFirstCreateEvent(): void
-    {
-        // given
-        $entity = new class() extends AbstractAggregate {
-            public function __construct() {
-                $this->recordEvent(new EmptyEvent());
-            }
-
+        $id = $this->createMock(IdInterface::class);
+        $aggregate = new class($id) extends AbstractAggregate {
             /**
-             * @param EmptyEvent $event
-             * @return static
+             * @param IdInterface $id
              */
-            protected static function createFromEmptyEvent(EmptyEvent $event): static
+            public function __construct(private(set) readonly IdInterface $id)
             {
-                return new static();
-            }
-        };
-
-        // when
-        $recreatedEntity = $entity::recreate([new EmptyEvent()]);
-
-        // then
-        $this->assertCount(0, $recreatedEntity->releaseEvents());
-    }
-
-    /**
-     * @return void
-     * @throws MissingMethodException
-     * @throws NoEventsProvidedException
-     */
-    public function testShouldRecreateEntityWithTwoEvents(): void
-    {
-        // given
-        $entity = new class() extends AbstractAggregate {
-            public string $test = '';
-
-            public function __construct() {
-                $this->recordEvent(new EmptyEvent());
             }
 
             /**
-             * @param EmptyEvent $event
-             * @return static
-             */
-            protected static function createFromEmptyEvent(EmptyEvent $event): static
-            {
-                return new static();
-            }
-
-            /**
-             * @param EmptyEvent $event
              * @return void
              */
-            protected function applyEmptyEvent(EmptyEvent $event): void
+            public function doSomething(): void
             {
-                $this->test = 'test';
-            }
-        };
-
-        // when
-        $recreatedEntity = $entity::recreate([
-            new EmptyEvent(),
-            new EmptyEvent()
-        ]);
-
-        // then
-        $this->assertCount(0, $recreatedEntity->releaseEvents());
-        $this->assertEquals('test', $recreatedEntity->test);
-    }
-
-    /**
-     * @return void
-     * @throws MissingMethodException
-     * @throws NoEventsProvidedException
-     */
-    public function testShouldThrowExceptionWhenRecreateEntityWithTwoEventsWhenMissingApplyMethod(): void
-    {
-        // then
-        $this->expectException(MissingMethodException::class);
-
-        // given
-        $entity = new class() extends AbstractAggregate {
-            public function __construct() {
                 $this->recordEvent(new EmptyEvent());
             }
 
             /**
-             * @param EmptyEvent $event
-             * @return static
+             * @inheritDoc
              */
-            protected static function createFromEmptyEvent(EmptyEvent $event): static
+            #[Override]
+            public static function reconstruct(IdInterface $id, array $events): static
             {
-                return new static();
+                return new static($id);
+            }
+
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function getId(): IdInterface
+            {
+                return $this->id;
             }
         };
 
         // when
-        $entity::recreate([
-            new EmptyEvent(),
-            new EmptyEvent()
-        ]);
+        $eventsBefore = $aggregate->releaseEvents();
+        $aggregate->doSomething();
+        $eventsAfter = $aggregate->releaseEvents();
+
+        // then
+        $this->assertCount(0, $eventsBefore);
+        $this->assertCount(1, $eventsAfter);
+        $this->assertCount(0, $aggregate->releaseEvents());
     }
 }
