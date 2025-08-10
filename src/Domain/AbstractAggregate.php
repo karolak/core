@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Domain;
 
+use DomainException;
+
 abstract class AbstractAggregate implements EntityInterface
 {
     /** @var array<int,EventInterface> */
@@ -30,9 +32,9 @@ abstract class AbstractAggregate implements EntityInterface
     }
 
     /**
-     * @param IdInterface $id
      * @param array<int,EventInterface> $events
      * @return static
+     * @throws DomainException
      */
-    abstract public static function reconstruct(IdInterface $id, array $events): static;
+    abstract public static function reconstruct(array $events): static;
 }

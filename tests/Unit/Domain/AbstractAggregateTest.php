@@ -6,7 +6,8 @@ namespace Karolak\Core\Tests\Unit\Domain;
 
 use Karolak\Core\Domain\AbstractAggregate;
 use Karolak\Core\Domain\IdInterface;
-use Karolak\Core\Tests\Mock\EmptyEvent;
+use Karolak\Core\Tests\Mock\DummyEvent;
+use Karolak\Core\Tests\Mock\DummyId;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\Exception;
@@ -24,7 +25,7 @@ final class AbstractAggregateTest extends TestCase
     public function testShouldRecordEventAndExtractIt(): void
     {
         // given
-        $id = $this->createMock(IdInterface::class);
+        $id = new DummyId('1');
         $aggregate = new class($id) extends AbstractAggregate {
             /**
              * @param IdInterface $id
@@ -38,16 +39,16 @@ final class AbstractAggregateTest extends TestCase
              */
             public function doSomething(): void
             {
-                $this->recordEvent(new EmptyEvent());
+                $this->recordEvent(new DummyEvent());
             }
 
             /**
              * @inheritDoc
              */
             #[Override]
-            public static function reconstruct(IdInterface $id, array $events): static
+            public static function reconstruct(array $events): static
             {
-                return new static($id);
+                return new static(new DummyId('1'));
             }
 
             /**
