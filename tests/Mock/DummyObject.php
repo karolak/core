@@ -6,7 +6,7 @@ namespace Karolak\Core\Tests\Mock;
 
 use Override;
 
-readonly class EmptyObject implements EmptyInterface
+readonly class DummyObject implements DummyInterface
 {
     /**
      * @inheritDoc

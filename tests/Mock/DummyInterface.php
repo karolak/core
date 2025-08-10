@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Karolak\Core\Tests\Mock;
 
-interface EmptyInterface
+interface DummyInterface
 {
     /**
      * @return int

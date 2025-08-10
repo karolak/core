@@ -11,7 +11,7 @@ use Karolak\Core\Action\Cli\InputInterface;
 use Karolak\Core\Action\Cli\InputParserInterface;
 use Karolak\Core\Action\Cli\OutputInterface;
 use Karolak\Core\Action\Cli\Status;
-use Karolak\Core\Tests\Mock\EmptyCommand;
+use Karolak\Core\Tests\Mock\DummyCommand;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\Exception;
@@ -49,8 +49,8 @@ final class ConsoleTest extends TestCase
             ->willReturnCallback(
                 function (string $key) use ($inputParser, $output) {
                     return match ($key) {
-                        ConsoleConfigInterface::class => $this->getConfig(['test' => EmptyCommand::class]),
-                        EmptyCommand::class => new EmptyCommand(),
+                        ConsoleConfigInterface::class => $this->getConfig(['test' => DummyCommand::class]),
+                        DummyCommand::class => new DummyCommand(),
                         InputParserInterface::class => $inputParser,
                         OutputInterface::class => $output,
                         default => null
@@ -159,8 +159,8 @@ final class ConsoleTest extends TestCase
             ->willReturnCallback(
                 function (string $key) {
                     return match ($key) {
-                        ConsoleConfigInterface::class => $this->getConfig(['test' => EmptyCommand::class]),
-                        EmptyCommand::class => throw new \Exception('Object not found in container.'),
+                        ConsoleConfigInterface::class => $this->getConfig(['test' => DummyCommand::class]),
+                        DummyCommand::class => throw new \Exception('Object not found in container.'),
                         default => null
                     };
                 }
@@ -221,8 +221,8 @@ final class ConsoleTest extends TestCase
             ->willReturnCallback(
                 function (string $key) {
                     return match ($key) {
-                        ConsoleConfigInterface::class => $this->getConfig(['test' => EmptyCommand::class]),
-                        EmptyCommand::class => new EmptyCommand(),
+                        ConsoleConfigInterface::class => $this->getConfig(['test' => DummyCommand::class]),
+                        DummyCommand::class => new DummyCommand(),
                         InputParserInterface::class => throw new \Exception('Object not found in container.'),
                         default => null
                     };
@@ -255,8 +255,8 @@ final class ConsoleTest extends TestCase
             ->willReturnCallback(
                 function (string $key) {
                     return match ($key) {
-                        ConsoleConfigInterface::class => $this->getConfig(['test' => EmptyCommand::class]),
-                        EmptyCommand::class => new EmptyCommand(),
+                        ConsoleConfigInterface::class => $this->getConfig(['test' => DummyCommand::class]),
+                        DummyCommand::class => new DummyCommand(),
                         InputParserInterface::class => new stdClass(),
                         default => null
                     };
@@ -291,8 +291,8 @@ final class ConsoleTest extends TestCase
             ->willReturnCallback(
                 function (string $key) use ($inputParser) {
                     return match ($key) {
-                        ConsoleConfigInterface::class => $this->getConfig(['test' => EmptyCommand::class]),
-                        EmptyCommand::class => new EmptyCommand(),
+                        ConsoleConfigInterface::class => $this->getConfig(['test' => DummyCommand::class]),
+                        DummyCommand::class => new DummyCommand(),
                         InputParserInterface::class => $inputParser,
                         OutputInterface::class => throw new \Exception('Object not found in container.'),
                         default => null
@@ -328,8 +328,8 @@ final class ConsoleTest extends TestCase
             ->willReturnCallback(
                 function (string $key) use ($inputParser) {
                     return match ($key) {
-                        ConsoleConfigInterface::class => $this->getConfig(['test' => EmptyCommand::class]),
-                        EmptyCommand::class => new EmptyCommand(),
+                        ConsoleConfigInterface::class => $this->getConfig(['test' => DummyCommand::class]),
+                        DummyCommand::class => new DummyCommand(),
                         InputParserInterface::class => $inputParser,
                         OutputInterface::class => new stdClass(),
                         default => null
