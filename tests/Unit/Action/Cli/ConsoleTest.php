@@ -14,14 +14,12 @@ use Karolak\Core\Action\Cli\Status;
 use Karolak\Core\Tests\Mock\EmptyCommand;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use stdClass;
 
 #[
-    UsesClass(Console::class),
     CoversClass(Console::class),
     CoversClass(CommandArgument::class)
 ]

@@ -10,13 +10,11 @@ use Karolak\Core\Application\Logger\Logger;
 use Karolak\Core\Application\Logger\LoggerConfigInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversTrait;
-use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
 #[
-    UsesClass(Logger::class),
     CoversClass(Logger::class),
     CoversTrait(DefaultConfigTrait::class)
 ]

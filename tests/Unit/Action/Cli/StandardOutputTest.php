@@ -6,13 +6,9 @@ namespace Karolak\Core\Tests\Unit\Action\Cli;
 
 use Karolak\Core\Action\Cli\StandardOutput;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
-#[
-    UsesClass(StandardOutput::class),
-    CoversClass(StandardOutput::class)
-]
+#[CoversClass(StandardOutput::class)]
 final class StandardOutputTest extends TestCase
 {
     /**

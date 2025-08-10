@@ -9,11 +9,9 @@ use Karolak\Core\Application\Logger\LoggerConfigInterface;
 use Karolak\Core\Infrastructure\Logger\FileHandler;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversTrait;
-use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
 #[
-    UsesClass(FileHandler::class),
     CoversClass(FileHandler::class),
     CoversTrait(DefaultConfigTrait::class)
 ]

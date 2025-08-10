@@ -8,14 +8,10 @@ use Karolak\Core\Application\View\PlainPHPView;
 use Karolak\Core\Application\View\ViewConfigInterface;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-#[
-    UsesClass(PlainPHPView::class),
-    CoversClass(PlainPHPView::class)
-]
+#[CoversClass(PlainPHPView::class)]
 final class PlainPHPViewTest extends TestCase
 {
     /**

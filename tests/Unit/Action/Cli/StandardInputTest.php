@@ -8,11 +8,9 @@ use Karolak\Core\Action\Cli\ArgumentNotFoundException;
 use Karolak\Core\Action\Cli\OptionNotFoundException;
 use Karolak\Core\Action\Cli\StandardInput;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
 #[
-    UsesClass(StandardInput::class),
     CoversClass(StandardInput::class),
     CoversClass(ArgumentNotFoundException::class),
     CoversClass(OptionNotFoundException::class)
