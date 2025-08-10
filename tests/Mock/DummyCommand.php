@@ -13,11 +13,11 @@ use Karolak\Core\Action\Cli\Status;
 use Override;
 
 #[
-    CommandDescription('Empty test command.'),
+    CommandDescription('Dummy test command.'),
     CommandArgument('arg1'),
     CommandArgument('arg2')
 ]
-readonly class EmptyCommand implements CommandInterface
+readonly class DummyCommand implements CommandInterface
 {
     /**
      * @inheritDoc

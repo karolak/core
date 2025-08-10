@@ -8,9 +8,9 @@ use Karolak\Core\Application\Container\ContainerConfigInterface;
 use Karolak\Core\Application\Container\ContainerEntryNotFoundException;
 use Karolak\Core\Application\Container\ContainerException;
 use Karolak\Core\Application\Container\LazyObjectContainer;
-use Karolak\Core\Tests\Mock\EmptyInterface;
-use Karolak\Core\Tests\Mock\EmptyObject;
-use Karolak\Core\Tests\Mock\ObjectWithDependency;
+use Karolak\Core\Tests\Mock\DummyInterface;
+use Karolak\Core\Tests\Mock\DummyObject;
+use Karolak\Core\Tests\Mock\DummyObjectWithDependency;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -34,17 +34,17 @@ final class LazyObjectContainerTest extends TestCase
     {
         // when
         $container = new LazyObjectContainer($this->getConfig([
-            EmptyInterface::class => [EmptyObject::class],
-            ObjectWithDependency::class => [ObjectWithDependency::class, EmptyInterface::class]
+            DummyInterface::class => [DummyObject::class],
+            DummyObjectWithDependency::class => [DummyObjectWithDependency::class, DummyInterface::class]
         ]));
 
         // then
-        $this->assertTrue($container->has(EmptyInterface::class));
-        $this->assertInstanceOf(EmptyObject::class, $container->get(EmptyInterface::class));
-        $this->assertEquals(0, $container->get(EmptyInterface::class)->getValue());
-        $this->assertTrue($container->has(ObjectWithDependency::class));
-        $this->assertInstanceOf(ObjectWithDependency::class, $container->get(ObjectWithDependency::class));
-        $this->assertEquals(0, $container->get(ObjectWithDependency::class)->object->getValue());
+        $this->assertTrue($container->has(DummyInterface::class));
+        $this->assertInstanceOf(DummyObject::class, $container->get(DummyInterface::class));
+        $this->assertEquals(0, $container->get(DummyInterface::class)->getValue());
+        $this->assertTrue($container->has(DummyObjectWithDependency::class));
+        $this->assertInstanceOf(DummyObjectWithDependency::class, $container->get(DummyObjectWithDependency::class));
+        $this->assertEquals(0, $container->get(DummyObjectWithDependency::class)->object->getValue());
     }
 
     /**
@@ -58,7 +58,7 @@ final class LazyObjectContainerTest extends TestCase
 
         // when
         new LazyObjectContainer($this->getConfig([
-            EmptyInterface::class => [EmptyInterface::class]
+            DummyInterface::class => [DummyInterface::class]
         ]));
     }
 
@@ -76,7 +76,7 @@ final class LazyObjectContainerTest extends TestCase
         $container = new LazyObjectContainer($this->getConfig());
 
         // when
-        $container->get(EmptyObject::class);
+        $container->get(DummyObject::class);
     }
 
     /**
