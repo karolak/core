@@ -16,13 +16,11 @@ final readonly class ListenerProvider implements ListenerProviderInterface
 {
     /**
      * @param EventDispatcherConfigInterface $config
-     * @param ListenerClassifierInterface $listenersClassifier
      * @param ContainerInterface $container
      * @param LoggerInterface $logger
      */
     public function __construct(
         private EventDispatcherConfigInterface $config,
-        private ListenerClassifierInterface $listenersClassifier,
         private ContainerInterface $container,
         private LoggerInterface $logger,
     ) {
@@ -35,7 +33,7 @@ final readonly class ListenerProvider implements ListenerProviderInterface
     #[Override]
     public function getListenersForEvent(object $event): iterable
     {
-        $eventListeners = $this->listenersClassifier->groupByEvents($this->config->getListeners())[$event::class] ?? [];
+        $eventListeners = $this->config->getListenersPerEvent()[$event::class] ?? [];
         $result = [];
         foreach ($eventListeners as $eventListener) {
             try {

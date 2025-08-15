@@ -7,7 +7,7 @@ namespace Karolak\Core\Application\EventDispatcher;
 interface EventDispatcherConfigInterface
 {
     /**
-     * @return array<int,class-string>
+     * @return array<class-string,array<int,class-string>>
      */
-    public function getListeners(): array;
+    public function getListenersPerEvent(): array;
 }

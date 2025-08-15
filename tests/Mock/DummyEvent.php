@@ -8,7 +8,7 @@ use DateTimeImmutable;
 use Karolak\Core\Domain\EventInterface;
 use Override;
 
-readonly class DummyEvent implements EventInterface
+class DummyEvent implements EventInterface
 {
     /**
      * @inheritDoc
