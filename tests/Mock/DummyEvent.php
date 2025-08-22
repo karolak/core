@@ -18,4 +18,22 @@ class DummyEvent implements EventInterface
     {
         return new DateTimeImmutable();
     }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public function toPayload(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public static function fromPayload(array $payload): self
+    {
+        return new self();
+    }
 }
